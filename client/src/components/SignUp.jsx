@@ -29,7 +29,17 @@ const SignUp = () => {
       password,
     }),
   })
-  .then(response => response.json())
+  .then((response) => {
+    if (response.ok) {
+      return response.json();
+    } else if (response.status === 409) {
+      return response.json().then((errorData) => Promise.reject(errorData));
+    } else if (response.status === 422){
+      return response.json().then((errorData) => Promise.reject(errorData));
+    } else {
+      return Promise.reject('Error creating user: ' + response.statusText);
+    }
+  })
   .then(data => {
     if (data && data.errorArray) {
       // Store the error array in a variable or state for displaying to the client
@@ -42,7 +52,18 @@ const SignUp = () => {
       navigate('/');
     }
   })
-  .catch(error => console.error(error));
+  .catch((error) => {
+    if (error.error) {
+      console.log('Username / email already exists:', error.error);
+      alert("username / email taken");
+      // Show an error message to the user indicating that the username already exists
+      // You can update your UI to display this message in a suitable manner (e.g., a toast, modal, or inline message)
+    } else {
+      console.error(error);
+      // Handle other errors, such as server errors (status 500) or network issues
+      // Display an appropriate error message to the user if needed
+    }
+  });
   
 
   // reset the form fields

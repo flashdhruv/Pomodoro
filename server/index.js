@@ -4,6 +4,7 @@ const {check, validationResult} = require('express-validator');
 const mongoose = require("mongoose");
 const cors = require("cors");
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 //remember to run mongod on the cmd to ensure connection.
 
 const app = express();
@@ -78,7 +79,7 @@ app.post('/api/signup', [
     return true;
   })
 
-], (req,res) => {
+], async (req,res) => {
   console.log("Request body: ", req.body);
 
   // Define the months and initialize the activity array
@@ -87,12 +88,16 @@ app.post('/api/signup', [
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
 
+  // Hash the user's password before saving it
+  const saltRounds = 10;
+  const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+
   const activity = months.map(month => ({ month, cycles: 0 }));
   const defaultAvatarSrc = "client/src/avatarImages/defaultAvatar.png";
   const newFormData = new FormData({
     name: req.body.name,
     email: req.body.email,
-    password: req.body.password,
+    password: hashedPassword,
     coins: 0,
     activity,
     equippedBackground: "",
@@ -103,11 +108,20 @@ app.post('/api/signup', [
   });
   console.log(newFormData);
   const error = validationResult(req);
-    if(!error.isEmpty()){
-      return res.status(422).send({
-        errorArray: error.array()
-      });
-    }
+  if(!error.isEmpty()){
+    return res.status(422).send({
+      errorArray: error.array()
+    });
+  }
+
+  // Check if name exists
+  const formData = await FormData.findOne({ name: req.body.name });
+  if (formData) {
+    return res.status(409).send({
+      error: 'Name already exists in the database'
+    });
+  }
+
   //saves data into mongodb
   newFormData.save()
   .then(savedFormData => {
@@ -124,11 +138,12 @@ app.post('/api/signup', [
 //Used for Login
 app.post('/api/login',[
   //validatiors for form info
-  check('email', 'Email is not valid')
+  check('name', 'Name must be 5+ letters long')
   .exists()
-  .isEmail()
-  .normalizeEmail()
-  .isLength({ max: 100 }).withMessage('Email must not exceed 100 characters'),
+  .isLength({ min: 5 })
+  .trim()
+  .isAlpha().withMessage('Name must contain only alphabetic characters')
+  .isLength({ max: 50 }).withMessage('Name must not exceed 50 characters'),
 
   check('password', 'The password is too weak')
   .exists()
@@ -137,16 +152,29 @@ app.post('/api/login',[
 
 
 ], async (req, res) => {
-  const { email, password } = req.body;
+  const { name, password } = req.body;
   console.log("password ", password);
   try {
     // Check if user with email exists in the database
-    const user = await FormData.findOne({ email, password });
+    const user = await FormData.findOne({ name , password });
 
     if (!user) {
-      return res.status(401).send('Invalid credentials');
+      return res.status(401).send('Invalid credentials, no user found');
     }
     console.log("User ",user);
+    console.log("user password: " , user.password);
+    // Compare the provided password with the hashed password in the database
+    bcrypt.compare(user.password, password, function(err, res){
+      if(err){
+        console.log(err);
+        return res.status(401).send('Invalid credentials, password not found');
+      }
+      if(res){
+        console.log(res);
+      }
+    });
+    
+
     const error = validationResult(req);
     if(!error.isEmpty()){
       return res.status(422).send(error);
@@ -162,7 +190,7 @@ app.post('/api/login',[
     res.json(data);
 
   } catch (err) {
-    console.error(err);
+    console.error("error", err);
     res.status(500).send({
           "error": "Server Error"
        });

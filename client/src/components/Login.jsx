@@ -4,7 +4,7 @@ import { useNavigate, Link, createSearchParams } from 'react-router-dom';
 
 const Login = () => {
 
-    const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [Data, setData] = useState('');
     const [isValid, setIsValid] = useState(false);
@@ -12,14 +12,14 @@ const Login = () => {
 
     async function handleSubmit(event) {
     event.preventDefault();
-    console.log(`Email: ${email} Password: ${password}`);
+    console.log(`name: ${name} Password: ${password}`);
     // perform login logic here
 
   await fetch('http://localhost:3001/api/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      email,
+      name,
       password,
     }),
   })
@@ -41,7 +41,7 @@ const Login = () => {
 
 
   // reset the form fields
-  setEmail('');
+  setName('');
   setPassword('');
   };
 
@@ -52,7 +52,7 @@ const Login = () => {
     navigate({
       pathname: '/pomodoro',
       search: createSearchParams({
-        username: "guest"
+        name: "guest"
       }).toString()
     });
   }
@@ -61,22 +61,21 @@ const Login = () => {
       <React.Fragment>
         <div className='container-fluid px-0 '>
         <div className="row g-0">
-        <div class="col-lg-6 d-flex align-items-center"> 
+        <div className="col-lg-6 d-flex align-items-center"> 
         <div className='w-100'>
         <h1 className='text-center'>Login</h1>
     <form onSubmit={handleSubmit} className='text-center'>
     <div className="form-outline mb-4">
       <label>
-        Email:
+        username:
         <input
-          type="email"
-          value={email}
+          type="name"
+          value={name}
           onChange={(event) => {
-            setEmail(event.target.value);
+            setName(event.target.value);
             setIsValid(event.target.validity.valid);
           }}
           required
-          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
         />
       </label>
       </div>
@@ -95,7 +94,7 @@ const Login = () => {
         />
       </label>
       </div>
-      <button type="submit" class="btn btn-primary btn-block">Login</button>
+      <button type="submit" className="btn btn-primary btn-block">Login</button>
     </form>
 
         <div className='text-center'>

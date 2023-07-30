@@ -46,7 +46,7 @@ const Profile = () => {
               });
 
       
-              if(data.user.equippedAvatar === ""){
+              if(data.user.equippedAvatar === "client/src/avatarImages/defaultAvatar.png"){
                 setAvatarSrc(defaultAvatar);
               }else{
                 setAvatarSrc(data.user.equippedAvatar);

@@ -1,13 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link, createSearchParams, useSearchParams } from 'react-router-dom';
 import waterDrop from '../backgroundImages/waterDrop.jpg';
+import space from '../backgroundImages/space.jpg';
+import abstract from '../backgroundImages/abstract.jpg';
+import lines from '../backgroundImages/lines.jpg';
+import somedesign from '../backgroundImages/somedesign.jpg';
+import bulbaAvatar from '../avatarImages/bulbaAvatar.jpg';
+import pikachuavatar from '../avatarImages/pikachuavatar.jpg';
+import doggoAvatar from '../avatarImages/doggoAvatar.jpg';
+import pandaAvatar from '../avatarImages/pandaAvatar.png';
+
 
 function Store() {
     const navigate = useNavigate();
     const avatars = [
         {
             id : 1,
-            imgSrc : {'src' : waterDrop},
+            imgSrc : {'src' : bulbaAvatar},
             title : 'avatar 1',
             description : 'Description ...',
             cost: 5,
@@ -15,7 +24,7 @@ function Store() {
         },
         {
             id : 2,
-            imgSrc : 'abc',
+            imgSrc : {'src' : pikachuavatar},
             title : 'avatar 2',
             description : 'Description ...',
             cost: 10,
@@ -23,7 +32,7 @@ function Store() {
         },
         {
             id : 3,
-            imgSrc : 'abc',
+            imgSrc : {'src' : doggoAvatar},
             title : 'avatar 3',
             description : 'Description ...',
             cost: 20,
@@ -31,7 +40,7 @@ function Store() {
         },
         {
             id : 4,
-            imgSrc : 'abc',
+            imgSrc : {'src' : pandaAvatar},
             title : 'avatar 4',
             description : 'Description ...',
             cost: 30,
@@ -39,7 +48,7 @@ function Store() {
         },
         {
             id : 5,
-            imgSrc : 'abc',
+            imgSrc : {'src' : pandaAvatar},
             title : 'avatar 5',
             description : 'Description ...',
             cost: 12,
@@ -58,7 +67,7 @@ function Store() {
         },
         {
             id : 2,
-            imgSrc : {'src' : waterDrop},
+            imgSrc : {'src' : space},
             title : 'Background 2',
             description : 'Description ...',
             cost: 20,
@@ -66,7 +75,7 @@ function Store() {
         },
         {
             id : 3,
-            imgSrc : 'abc',
+            imgSrc : {'src' : abstract},
             title : 'Background 3',
             description : 'Description ...',
             cost: 10,
@@ -74,7 +83,7 @@ function Store() {
         },
         {
             id : 4,
-            imgSrc : 'abc',
+            imgSrc : {'src' : lines},
             title : 'Background 4',
             description : 'Description ...',
             cost: 5,
@@ -82,7 +91,7 @@ function Store() {
         },
         {
             id : 5,
-            imgSrc : 'abc',
+            imgSrc : {'src' : somedesign},
             title : 'Background 5',
             description : 'Description ...',
             cost: 2,
@@ -200,7 +209,7 @@ function Store() {
               {avatars.map((avatar) => (
                 <React.Fragment key={avatar.id}>
                   <div className="card mx-2" style={{ width: '18rem' }}>
-                    <img src={avatar.imgSrc['src']} className="card-img-top" alt="..." />
+                    <img src={avatar.imgSrc['src']} className="card-img-top" alt="..." style={{ width: '17rem', height: '15rem' }}/>
                     <div className="card-body">
                       <h5 className="card-title">{avatar.title}</h5>
                       <p className="card-text">{avatar.description}</p>
@@ -224,7 +233,7 @@ function Store() {
               {backgrounds.map((background) => (
                 <React.Fragment key={background.id}>
                   <div className="card mx-2" style={{ width: '18rem' }}>
-                    <img src={background.imgSrc['src']} className="card-img-top" alt="..." />
+                    <img src={background.imgSrc['src']} className="card-img-top" alt="..." style={{ width: '17rem', height: '15rem' }}/>
                     <div className="card-body">
                       <h5 className="card-title">{background.title}</h5>
                       <p className="card-text">{background.description}</p>
